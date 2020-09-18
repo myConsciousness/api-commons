@@ -21,12 +21,12 @@ package org.thinkit.api.common;
  * @since 1.0
  * @version 1.0
  */
-public interface Communicable<T> {
+public interface Communicable<R> {
 
     /**
      * HTTPリクエストを送信し、 {@link Communicable} インターフェースを実装する際にジェネリクスへ指定したデータ型の値を返却します。
      *
      * @return {@link Communicable} インターフェースを実装する際にジェネリクスへ指定したデータ型のレスポンス
      */
-    public T send();
+    public R send();
 }
