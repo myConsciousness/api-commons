@@ -31,30 +31,104 @@ public final class ApiContext<R> {
     private Communicable<R> api;
 
     /**
+     * リトライ可否
+     */
+    private boolean retry;
+
+    /**
+     * リトライ時の待機時間
+     */
+    private int latency = 10;
+
+    /**
      * デフォルトコンストラクタ
      */
     private ApiContext() {
     }
 
     /**
-     * コンストラクタ
+     * {@link ApiContext} オブジェクトを生成するビルダークラスです。
      *
-     * @param api APIオブジェクト
-     *
-     * @exception NullPointerException 引数として {@code null} が渡された場合
+     * @author Kato Shinya
+     * @since 1.0
+     * @version 1.0
      */
-    private ApiContext(@NonNull Communicable<R> api) {
-        this.api = api;
-    }
+    public static class Builder<R> {
 
-    /**
-     * 引数として渡された {@code api} を基に {@link ApiContext} オブジェクトの新しいインスタンスを生成し返却します。
-     *
-     * @param api APIオブジェクト
-     * @return {@link ApiContext} オブジェクトの新しいインスタンス
-     */
-    public static <R> ApiContext<R> of(@NonNull Communicable<R> api) {
-        return new ApiContext<R>(api);
-    }
+        /**
+         * APIオブジェクト
+         */
+        private Communicable<R> api;
 
+        /**
+         * リトライ可否
+         */
+        private boolean retry;
+
+        /**
+         * リトライ時の待機時間
+         */
+        private int latency = 5;
+
+        /**
+         * デフォルトコンストラクタ
+         */
+        private Builder() {
+        }
+
+        /**
+         * 引数として渡された {@code api} をオブジェクトに設定します。
+         *
+         * @param api APIオブジェクト
+         * @return 自分自身のインスタンス
+         */
+        public Builder<R> of(@NonNull Communicable<R> api) {
+            this.api = api;
+            return this;
+        }
+
+        /**
+         * 通信時にリトライを行うように設定します。
+         *
+         * @return 自分自身のインスタンス
+         */
+        public Builder<R> withRetry() {
+            this.retry = true;
+            return this;
+        }
+
+        /**
+         * 引数として渡された {@code latency} の値をリトライ時の待機時間として設定します。 待機時間は初期設定として5秒が設定されています。
+         *
+         * @param latency リトライ時の待機時間
+         * @return 自分自身のインスタンス
+         */
+        public Builder<R> withLatencyOnRetry(int latency) {
+            this.latency = latency;
+            return this;
+        }
+
+        /**
+         * 設定された値を基に {@link ApiContext} クラスの新しいインスタンスを生成し返却します。
+         *
+         * @return {@link ApiContext} クラスの新しいインスタンス
+         *
+         * @throws InvalidContextStateException {@link #of(Communicable)}
+         *                                      メソッドが呼び出されていない場合、または、APIオブジェクトが
+         *                                      {@code null} の場合
+         */
+        public ApiContext<R> build() {
+
+            if (this.api == null) {
+                throw new InvalidContextStateException();
+            }
+
+            final ApiContext<R> context = new ApiContext<>();
+            context.api = this.api;
+            context.retry = this.retry;
+            context.latency = this.latency;
+
+            return context;
+        }
+    }
 }
