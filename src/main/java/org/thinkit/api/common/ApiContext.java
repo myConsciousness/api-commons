@@ -23,12 +23,12 @@ import lombok.NonNull;
  * @since 1.0
  * @version 1.0
  */
-public final class ApiContext {
+public final class ApiContext<R> {
 
     /**
      * APIオブジェクト
      */
-    private Communicable<?> api;
+    private Communicable<R> api;
 
     /**
      * デフォルトコンストラクタ
@@ -43,7 +43,7 @@ public final class ApiContext {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    private ApiContext(@NonNull Communicable<?> api) {
+    private ApiContext(@NonNull Communicable<R> api) {
         this.api = api;
     }
 
@@ -53,7 +53,8 @@ public final class ApiContext {
      * @param api APIオブジェクト
      * @return {@link ApiContext} オブジェクトの新しいインスタンス
      */
-    public static ApiContext of(@NonNull Communicable<?> api) {
-        return new ApiContext(api);
+    public static <R> ApiContext<R> of(@NonNull Communicable<R> api) {
+        return new ApiContext<R>(api);
     }
+
 }
