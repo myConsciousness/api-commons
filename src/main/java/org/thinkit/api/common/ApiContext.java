@@ -23,12 +23,12 @@ import lombok.NonNull;
  * @since 1.0
  * @version 1.0
  */
-public final class ApiContext<R> {
+public final class ApiContext {
 
     /**
      * APIオブジェクト
      */
-    private Communicable<R> api;
+    private Communicable api;
 
     /**
      * リトライ可否
@@ -53,12 +53,12 @@ public final class ApiContext<R> {
      * @since 1.0
      * @version 1.0
      */
-    public static class Builder<R> {
+    public static class Builder {
 
         /**
          * APIオブジェクト
          */
-        private Communicable<R> api;
+        private Communicable api;
 
         /**
          * リトライ可否
@@ -82,7 +82,7 @@ public final class ApiContext<R> {
          * @param api APIオブジェクト
          * @return 自分自身のインスタンス
          */
-        public Builder<R> of(@NonNull Communicable<R> api) {
+        public Builder of(@NonNull Communicable api) {
             this.api = api;
             return this;
         }
@@ -92,7 +92,7 @@ public final class ApiContext<R> {
          *
          * @return 自分自身のインスタンス
          */
-        public Builder<R> withRetry() {
+        public Builder withRetry() {
             this.retry = true;
             return this;
         }
@@ -102,8 +102,15 @@ public final class ApiContext<R> {
          *
          * @param latency リトライ時の待機時間
          * @return 自分自身のインスタンス
+         *
+         * @throws InvalidContextStateException リトライ時の待機時間として負数が渡された場合
          */
-        public Builder<R> withLatencyOnRetry(int latency) {
+        public Builder withLatencyOnRetry(int latency) {
+
+            if (latency < 0) {
+                throw new InvalidContextStateException();
+            }
+
             this.latency = latency;
             return this;
         }
@@ -117,13 +124,13 @@ public final class ApiContext<R> {
          *                                      メソッドが呼び出されていない場合、または、APIオブジェクトが
          *                                      {@code null} の場合
          */
-        public ApiContext<R> build() {
+        public ApiContext build() {
 
             if (this.api == null) {
                 throw new InvalidContextStateException();
             }
 
-            final ApiContext<R> context = new ApiContext<>();
+            final ApiContext context = new ApiContext();
             context.api = this.api;
             context.retry = this.retry;
             context.latency = this.latency;
