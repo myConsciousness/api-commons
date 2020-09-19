@@ -15,8 +15,8 @@
 package org.thinkit.api.common;
 
 /**
- * Thrown to indicate that an incorrect operation or incorrect value has been
- * detected when performing rule processing.
+ * Thrown to indicate that an invalid context state has been detected when
+ * performing rule processing.
  *
  * @author Kato Shinya
  * @since 1.0
