@@ -15,7 +15,8 @@
 package org.thinkit.api.common;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.net.http.HttpResponse;
 
 import org.junit.jupiter.api.Test;
 
@@ -29,64 +30,23 @@ import org.junit.jupiter.api.Test;
 class CommunicableTest {
 
     @Test
-    void testToString() {
-        final String actual = new CommunicableToString().send();
-        assertNotNull(actual);
-        assertEquals("success", actual);
-    }
-
-    @Test
-    void testToInteger() {
-        assertEquals(1, new CommunicableToInteger().send());
-    }
-
-    @Test
-    void testToBoolean() {
-        assertEquals(true, new CommunicableToBoolean().send());
+    void testHttpCommunication() {
+        final HttpResponse<String> actual = new CommunicableApi().send();
+        assertEquals(null, actual);
     }
 
     /**
-     * String型の返却値を返却する {@link Communicable#convert()} メソッドを実装するクラスです。
+     * {@link Communicable#send()} メソッドを実装するクラスです。
      *
      * @author Kato Shinya
      * @since 1.0
      * @version 1.0
      */
-    class CommunicableToString implements Communicable<String> {
+    class CommunicableApi implements Communicable {
 
         @Override
-        public String send() {
-            return "success";
-        }
-    }
-
-    /**
-     * int型の返却値を返却する {@link Communicable#convert()} メソッドを実装するクラスです。
-     *
-     * @author Kato Shinya
-     * @since 1.0
-     * @version 1.0
-     */
-    class CommunicableToInteger implements Communicable<Integer> {
-
-        @Override
-        public Integer send() {
-            return 1;
-        }
-    }
-
-    /**
-     * boolean型の返却値を返却する {@link Communicable#convert()} メソッドを実装するクラスです。
-     *
-     * @author Kato Shinya
-     * @since 1.0
-     * @version 1.0
-     */
-    class CommunicableToBoolean implements Communicable<Boolean> {
-
-        @Override
-        public Boolean send() {
-            return true;
+        public HttpResponse<String> send() {
+            return null;
         }
     }
 }
