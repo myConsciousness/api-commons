@@ -14,6 +14,11 @@
 
 package org.thinkit.api.common;
 
+import java.net.http.HttpResponse;
+
+import org.thinkit.api.catalog.BiCatalog;
+import org.thinkit.api.common.catalog.HttpStatus;
+
 import lombok.NonNull;
 
 /**
@@ -36,9 +41,14 @@ public final class ApiContext {
     private boolean retry;
 
     /**
+     * リトライ数
+     */
+    private int retryCount;
+
+    /**
      * リトライ時の待機時間
      */
-    private int latency = 10;
+    private int latency = 5;
 
     /**
      * デフォルトコンストラクタ
@@ -64,6 +74,11 @@ public final class ApiContext {
          * リトライ可否
          */
         private boolean retry;
+
+        /**
+         * リトライ数
+         */
+        private int retryCount;
 
         /**
          * リトライ時の待機時間
@@ -94,6 +109,17 @@ public final class ApiContext {
          */
         public Builder withRetry() {
             this.retry = true;
+            return this;
+        }
+
+        /**
+         * リトライ数を設定します。
+         *
+         * @param retryCount リトライ数
+         * @return 自分自身のインスタンス
+         */
+        public Builder withRetryCount(int retryCount) {
+            this.retryCount = retryCount;
             return this;
         }
 
@@ -133,9 +159,41 @@ public final class ApiContext {
             final ApiContext context = new ApiContext();
             context.api = this.api;
             context.retry = this.retry;
+            context.retryCount = this.retryCount;
             context.latency = this.latency;
 
             return context;
         }
+    }
+
+    public String send() {
+
+        final HttpResponse<String> response = api.send();
+        final HttpStatus statusCode = BiCatalog.getEnum(HttpStatus.class, response.statusCode());
+
+        if (statusCode == null) {
+            throw new UnsupportedHttpStatusException();
+        }
+
+        if (statusCode != HttpStatus.OK) {
+            if (this.retry && this.isStatusRetryable(statusCode)) {
+
+            } else {
+
+            }
+        }
+
+        return response.body();
+    }
+
+    /**
+     * HTTPステータスが {@code 200} ではなかった場合にリトライ可能なステータスコードか判定します。
+     *
+     * @param statusCode HTTPステータスコード
+     * @return HTTPステータスコードがリクエストタイムアウトの場合、または内部サーバーエラーの場合は {@code true} 、それ以外は
+     *         {@code false}
+     */
+    private boolean isStatusRetryable(@NonNull HttpStatus statusCode) {
+        return statusCode == HttpStatus.REQUEST_TIMEOUT || statusCode == HttpStatus.INTERNAL_SERVER_ERROR;
     }
 }
