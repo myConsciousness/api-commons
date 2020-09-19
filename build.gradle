@@ -21,7 +21,7 @@ plugins {
 
 publishing {
    publications {
-        group 'org.thinkit.converter.common'
+        group 'org.thinkit.api.common'
         version = gitVersion()
 
         gpr(MavenPublication) {
