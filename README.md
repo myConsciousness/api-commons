@@ -2,7 +2,9 @@
 
 ## What is it?
 
-API Commons main repository.
+This package provides a common process and interface for sending API requests.
+
+This package was created for use in my personal side project, but it is necessary to import this package if you want to use a package created using the standards in this package.
 
 ## How To Use
 
