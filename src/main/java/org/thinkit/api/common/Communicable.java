@@ -14,6 +14,8 @@
 
 package org.thinkit.api.common;
 
+import java.net.http.HttpResponse;
+
 /**
  * 外部APIとのHTTP通信処理を抽象化したインターフェースです。
  *
@@ -21,12 +23,12 @@ package org.thinkit.api.common;
  * @since 1.0
  * @version 1.0
  */
-public interface Communicable<R> {
+public interface Communicable {
 
     /**
-     * HTTPリクエストを送信し、 {@link Communicable} インターフェースを実装する際にジェネリクスへ指定したデータ型の値を返却します。
+     * HTTPリクエストを送信し、文字列型のbody要素を持つHTTPレスポンスを返却します。
      *
-     * @return {@link Communicable} インターフェースを実装する際にジェネリクスへ指定したデータ型のレスポンス
+     * @return 文字列型のbody要素を持つHTTPレスポンス
      */
-    public R send();
+    public HttpResponse<String> send();
 }
