@@ -204,7 +204,7 @@ public final class ApiContext {
      * @exception UnsupportedHttpStatusException {@link HttpStatus}
      *                                           で定義されていないHTTPステータスを検知した場合
      */
-    public String send(int retryCount) {
+    private String send(int retryCount) {
 
         final HttpResponse<String> response = api.send();
         final HttpStatus statusCode = BiCatalog.getEnum(HttpStatus.class, response.statusCode());
