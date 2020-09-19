@@ -48,7 +48,7 @@ public final class ApiContext {
     /**
      * リトライ時の待機時間
      */
-    private int latency = 5;
+    private int latency;
 
     /**
      * デフォルトコンストラクタ
@@ -160,13 +160,17 @@ public final class ApiContext {
             context.api = this.api;
             context.retry = this.retry;
             context.retryCount = this.retryCount;
-            context.latency = this.latency;
+            context.latency = this.latency * 1000;
 
             return context;
         }
     }
 
     public String send() {
+        return this.send(0);
+    }
+
+    public String send(int retryCount) {
 
         final HttpResponse<String> response = api.send();
         final HttpStatus statusCode = BiCatalog.getEnum(HttpStatus.class, response.statusCode());
@@ -176,10 +180,11 @@ public final class ApiContext {
         }
 
         if (statusCode != HttpStatus.OK) {
-            if (this.retry && this.isStatusRetryable(statusCode)) {
-
+            if (this.retry && retryCount <= this.retryCount && this.isStatusRetryable(statusCode)) {
+                this.sleep();
+                return this.send(++retryCount);
             } else {
-
+                return null;
             }
         }
 
@@ -195,5 +200,16 @@ public final class ApiContext {
      */
     private boolean isStatusRetryable(@NonNull HttpStatus statusCode) {
         return statusCode == HttpStatus.REQUEST_TIMEOUT || statusCode == HttpStatus.INTERNAL_SERVER_ERROR;
+    }
+
+    /**
+     * {@link ApiContext} クラスのインスタンスを生成する際に設定されたリトライ時の待機時間を基にスレッドをスリープさせます。
+     */
+    private void sleep() {
+        try {
+            Thread.sleep(this.latency);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }
