@@ -166,10 +166,44 @@ public final class ApiContext {
         }
     }
 
+    /**
+     * HTTP通信を行いAPIを実行したレスポンスを文字列型として返却します。リトライ処理を行う場合は {@link ApiContext}
+     * クラスのインスタンスを生成する際に、 {@link Builder} クラスの処理で {@link Builder#withRetry()}
+     * メソッドを実行し、 {@link Builder#withRetryCount(int)} メソッドと
+     * {@link Builder#withLatencyOnRetry(int)} メソッドを必要に応じて呼び出しリトライ時のパラメータを設定してください。
+     * <p>
+     * リトライ処理を行わない場合で、APIからのレスポンスでHTTPステータスが {@code 200} 以外の場合は {@code null} を返却します。
+     * <p>
+     * リトライ処理の対象はAPIからのレスポンスでHTTPステータスが {@code 200} 以外で、かつHTTPステータスがタイムアウト
+     * {@code 408} 、またはHTTPステータスが内部サーバーエラー {@code 500} の場合です。リトライ処理が失敗した場合は
+     * {@code null} を返却します。
+     *
+     * @return APIから返却された文字列型のレスポンスボディ
+     *
+     * @exception UnsupportedHttpStatusException {@link HttpStatus}
+     *                                           で定義されていないHTTPステータスを検知した場合
+     */
     public String send() {
         return this.send(0);
     }
 
+    /**
+     * HTTP通信を行いAPIを実行したレスポンスを文字列型として返却します。リトライ処理を行う場合は {@link ApiContext}
+     * クラスのインスタンスを生成する際に、 {@link Builder} クラスの処理で {@link Builder#withRetry()}
+     * メソッドを実行し、 {@link Builder#withRetryCount(int)} メソッドと
+     * {@link Builder#withLatencyOnRetry(int)} メソッドを必要に応じて呼び出しリトライ時のパラメータを設定してください。
+     * <p>
+     * リトライ処理を行わない場合で、APIからのレスポンスでHTTPステータスが {@code 200} 以外の場合は {@code null} を返却します。
+     * <p>
+     * リトライ処理の対象はAPIからのレスポンスでHTTPステータスが {@code 200} 以外で、かつHTTPステータスがタイムアウト
+     * {@code 408} 、またはHTTPステータスが内部サーバーエラー {@code 500} の場合です。リトライ処理が失敗した場合は
+     * {@code null} を返却します。
+     *
+     * @return APIから返却された文字列型のレスポンスボディ
+     *
+     * @exception UnsupportedHttpStatusException {@link HttpStatus}
+     *                                           で定義されていないHTTPステータスを検知した場合
+     */
     public String send(int retryCount) {
 
         final HttpResponse<String> response = api.send();
