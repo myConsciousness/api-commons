@@ -16,7 +16,7 @@ package org.thinkit.api.common;
 
 /**
  * Thrown to indicate that an invalid context state has been detected when
- * performing rule processing.
+ * performing.
  *
  * @author Kato Shinya
  * @since 1.0
