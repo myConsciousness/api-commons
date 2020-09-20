@@ -15,6 +15,9 @@
 package org.thinkit.api.common;
 
 import java.net.http.HttpResponse;
+import java.util.Map;
+
+import lombok.NonNull;
 
 /**
  * 外部APIとのHTTP通信処理を抽象化したインターフェースです。
@@ -24,6 +27,24 @@ import java.net.http.HttpResponse;
  * @version 1.0
  */
 public interface Communicable {
+
+    /**
+     * 引数として渡されたパラメータマップを基にリクエストパラメータを生成し文字列型として返却します。
+     * 引数として渡すリクエストマップにはリクエストパラーメータのキーとリクエストパラメータの値が 1:1 で紐づくように格納してください。
+     * <p>
+     * 生成されたリクエストパラメータは {@code "key1=value1&key2=value2"} の形式で返却します。
+     *
+     * @param parameters リクエストパラメータを生成する際のパラメータマップ
+     * @return 生成されたリクエストパラメータ
+     */
+    default String createRequestParameter(@NonNull Map<String, String> parameters) {
+
+        final StringBuilder requestParameter = new StringBuilder();
+        parameters.forEach((key, value) -> requestParameter.append(String.format("%s=%s&", key, value)));
+        requestParameter.setLength(requestParameter.length() - 1);
+
+        return requestParameter.toString();
+    }
 
     /**
      * HTTPリクエストを送信し、文字列型のbody要素を持つHTTPレスポンスを返却します。
