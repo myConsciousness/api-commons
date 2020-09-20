@@ -30,12 +30,14 @@ public interface Communicable {
 
     /**
      * 引数として渡されたパラメータマップを基にリクエストパラメータを生成し文字列型として返却します。
-     * 引数として渡すリクエストマップにはリクエストパラーメータのキーとリクエストパラメータの値が 1:1 で紐づくように格納してください。
+     * 引数として渡すリクエストマップにはリクエストパラメータのキーとリクエストパラメータの値が 1:1 で紐づくように格納してください。
      * <p>
      * 生成されたリクエストパラメータは {@code "key1=value1&key2=value2"} の形式で返却します。
      *
      * @param parameters リクエストパラメータを生成する際のパラメータマップ
      * @return 生成されたリクエストパラメータ
+     *
+     * @exception NullPointerException 引数として {@code null} が渡された場合
      */
     default String createRequestParameter(@NonNull Map<String, String> parameters) {
 
