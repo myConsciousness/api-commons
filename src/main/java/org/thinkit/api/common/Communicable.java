@@ -63,10 +63,11 @@ public interface Communicable {
         Arrays.asList(parameter.getClass().getDeclaredFields()).forEach(field -> {
             if (field.isAnnotationPresent(ParameterMapping.class)) {
                 try {
+                    field.setAccessible(true);
                     final String value = field.get(parameter).toString();
 
                     if (!StringUtils.isEmpty(value)) {
-                        field.setAccessible(true);
+
                         final String key = field.getAnnotation(ParameterMapping.class).key();
                         requestParameter.append(String.format("%s=%s&", key, value));
                     }
