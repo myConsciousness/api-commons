@@ -42,13 +42,14 @@ public interface Communicable {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    default String createRequestParameter(@NonNull Class<? extends RequestParameter> parameter) {
+    default String createRequestParameter(@NonNull RequestParameter parameter) {
 
         final StringBuilder requestParameter = new StringBuilder();
 
-        Arrays.asList(parameter.getFields()).forEach(field -> {
+        Arrays.asList(parameter.getClass().getDeclaredFields()).forEach(field -> {
             if (field.isAnnotationPresent(ParameterMapping.class)) {
                 try {
+                    field.setAccessible(true);
                     final String key = field.getAnnotation(ParameterMapping.class).key();
                     final String value = field.get(parameter).toString();
                     requestParameter.append(String.format("%s=%s&", key, value));
