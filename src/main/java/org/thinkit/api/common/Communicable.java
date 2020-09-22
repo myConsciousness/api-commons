@@ -69,7 +69,8 @@ public interface Communicable {
                     if (!StringUtils.isEmpty(value)) {
 
                         final String key = field.getAnnotation(ParameterMapping.class).key();
-                        requestParameter.append(String.format("%s=%s&", key, value));
+                        requestParameter
+                                .append(String.format("%s=%s&", key, URLEncoder.encode(value, StandardCharsets.UTF_8)));
                     }
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     throw new InvalidParameterStateException(e);
@@ -79,7 +80,7 @@ public interface Communicable {
 
         requestParameter.setLength(requestParameter.length() - 1);
 
-        return URLEncoder.encode(requestParameter.toString(), StandardCharsets.UTF_8);
+        return requestParameter.toString();
     }
 
     /**
