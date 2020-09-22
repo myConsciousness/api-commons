@@ -36,5 +36,5 @@ public @interface ParameterMapping {
      *
      * @return HTTP通信時に使用するパラメータのキー名
      */
-    String paramaterKey();
+    String key();
 }

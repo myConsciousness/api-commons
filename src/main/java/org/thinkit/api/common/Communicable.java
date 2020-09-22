@@ -49,7 +49,7 @@ public interface Communicable {
         Arrays.asList(parameter.getClass().getFields()).forEach(field -> {
             if (field.isAnnotationPresent(ParameterMapping.class)) {
                 try {
-                    final String key = field.getAnnotation(ParameterMapping.class).paramaterKey();
+                    final String key = field.getAnnotation(ParameterMapping.class).key();
                     final String value = field.get(parameter).toString();
                     requestParameter.append(String.format("%s=%s&", key, value));
                 } catch (IllegalArgumentException | IllegalAccessException e) {
