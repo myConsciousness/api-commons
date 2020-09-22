@@ -14,9 +14,12 @@
 
 package org.thinkit.api.common;
 
+import java.net.URLEncoder;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
+import org.apache.commons.lang3.StringUtils;
 import org.thinkit.api.common.annotation.ParameterMapping;
 import org.thinkit.api.common.entity.RequestParameter;
 
@@ -32,13 +35,24 @@ import lombok.NonNull;
 public interface Communicable {
 
     /**
-     * 引数として渡されたパラメータマップを基にリクエストパラメータを生成し文字列型として返却します。
-     * 引数として渡すリクエストマップにはリクエストパラメータのキーとリクエストパラメータの値が 1:1 で紐づくように格納してください。
+     * 引数として渡された {@code parameter}
+     * オブジェクトに設定された情報を基にHTTP通信時に使用するリクエストパラメーターを生成し返却します。
      * <p>
-     * 生成されたリクエストパラメータは {@code "key1=value1&key2=value2"} の形式で返却します。
+     * リクエストパラメータは {@link RequestParameter} インターフェースを実装したクラス内に定義された
+     * {@link ParameterMapping} アノテーションを付与されたフィールドを対象に生成されます。生成されたリクエストパラメータは返却される前に
+     * {@code UTF-8} 形式でURLエンコード処理がされるため、この
+     * {@link Communicable#createRequestParameter(RequestParameter)}
+     * メソッドの呼び出し元でURLエンコードを行う必要はありません。
+     * <p>
+     * 引数として渡された {@link RequestParameter}
+     * クラスに設定された特定フィールドの値が空の場合、その値が空であったフィールドに対してのパラメータの設定処理は無視されます。
+     * <p>
+     * 返却時のリクエストパラメータの形式は {@code "key1=value1&key2=value2"} です。
      *
-     * @param parameters リクエストパラメータを生成する際のパラメータマップ
-     * @return 生成されたリクエストパラメータ
+     * @param parameter リクエストパラメーターを生成する際に使用するキーと値が格納されたオブジェクト
+     * @return 引数として渡された {@link RequestParameter}
+     *         クラスに設定された値を基に生成されたリクエストパラメーター。このリクエストパラメーターは {@code UTF-8}
+     *         形式でURLエンコード済みです。
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
@@ -49,10 +63,13 @@ public interface Communicable {
         Arrays.asList(parameter.getClass().getDeclaredFields()).forEach(field -> {
             if (field.isAnnotationPresent(ParameterMapping.class)) {
                 try {
-                    field.setAccessible(true);
-                    final String key = field.getAnnotation(ParameterMapping.class).key();
                     final String value = field.get(parameter).toString();
-                    requestParameter.append(String.format("%s=%s&", key, value));
+
+                    if (!StringUtils.isEmpty(value)) {
+                        field.setAccessible(true);
+                        final String key = field.getAnnotation(ParameterMapping.class).key();
+                        requestParameter.append(String.format("%s=%s&", key, value));
+                    }
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     throw new InvalidParameterStateException(e);
                 }
@@ -61,7 +78,7 @@ public interface Communicable {
 
         requestParameter.setLength(requestParameter.length() - 1);
 
-        return requestParameter.toString();
+        return URLEncoder.encode(requestParameter.toString(), StandardCharsets.UTF_8);
     }
 
     /**
