@@ -18,7 +18,7 @@ This package was created for use in my personal side project, but it is necessar
 <dependency>
   <groupId>org.thinkit.api.common</groupId>
   <artifactId>api-commons</artifactId>
-  <version>v1.0.8</version>
+  <version>v1.0.9</version>
 </dependency>
 
 <servers>
@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.thinkit.api.common:api-commons:v1.0.8'
+    implementation 'org.thinkit.api.common:api-commons:v1.0.9'
 }
 ```
 
