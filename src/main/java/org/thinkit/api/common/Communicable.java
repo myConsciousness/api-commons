@@ -46,7 +46,7 @@ public interface Communicable {
 
         final StringBuilder requestParameter = new StringBuilder();
 
-        Arrays.asList(parameter.getClass().getFields()).forEach(field -> {
+        Arrays.asList(parameter.getFields()).forEach(field -> {
             if (field.isAnnotationPresent(ParameterMapping.class)) {
                 try {
                     final String key = field.getAnnotation(ParameterMapping.class).key();
