@@ -15,7 +15,10 @@
 package org.thinkit.api.common;
 
 import java.net.http.HttpResponse;
-import java.util.Map;
+import java.util.Arrays;
+
+import org.thinkit.api.common.annotation.ParameterMapping;
+import org.thinkit.api.common.entity.RequestParameter;
 
 import lombok.NonNull;
 
@@ -39,10 +42,22 @@ public interface Communicable {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    default String createRequestParameter(@NonNull Map<String, String> parameters) {
+    default String createRequestParameter(@NonNull RequestParameter parameter) {
 
         final StringBuilder requestParameter = new StringBuilder();
-        parameters.forEach((key, value) -> requestParameter.append(String.format("%s=%s&", key, value)));
+
+        Arrays.asList(parameter.getClass().getFields()).forEach(field -> {
+            if (field.isAnnotationPresent(ParameterMapping.class)) {
+                try {
+                    final String key = field.getAnnotation(ParameterMapping.class).paramaterKey();
+                    final String value = field.get(parameter).toString();
+                    requestParameter.append(String.format("%s=%s&", key, value));
+                } catch (IllegalArgumentException | IllegalAccessException e) {
+                    throw new InvalidParameterStateException(e);
+                }
+            }
+        });
+
         requestParameter.setLength(requestParameter.length() - 1);
 
         return requestParameter.toString();
