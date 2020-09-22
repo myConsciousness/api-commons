@@ -42,7 +42,7 @@ public interface Communicable {
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    default String createRequestParameter(@NonNull RequestParameter parameter) {
+    default String createRequestParameter(@NonNull Class<? extends RequestParameter> parameter) {
 
         final StringBuilder requestParameter = new StringBuilder();
 
