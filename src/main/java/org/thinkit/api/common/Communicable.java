@@ -35,44 +35,44 @@ import lombok.NonNull;
 public interface Communicable {
 
     /**
-     * 引数として渡された {@code parameter}
+     * 引数として渡された {@code requestParameter}
      * オブジェクトに設定された情報を基にHTTP通信時に使用するリクエストパラメーターを生成し返却します。
      * <p>
      * リクエストパラメータは {@link RequestParameter} インターフェースを実装したクラス内に定義された
-     * {@link ParameterMapping} アノテーションを付与されたフィールドを対象に生成されます。生成されたリクエストパラメータは返却される前に
-     * {@code UTF-8} 形式でURLエンコード処理がされるため、この
-     * {@link Communicable#createRequestParameter(RequestParameter)}
+     * {@link ParameterMapping} アノテーションを付与されたフィールドを対象に生成されます。生成されたクエリの値は全ての項目に対して
+     * {@code UTF-8} 形式でURLエンコードが行われるため、この
+     * {@link Communicable#createQuery(RequestParameter)}
      * メソッドの呼び出し元でURLエンコードを行う必要はありません。
      * <p>
      * 引数として渡された {@link RequestParameter}
      * クラスに設定された特定フィールドの値が空の場合、その値が空であったフィールドに対してのパラメータの設定処理は無視されます。
      * <p>
-     * 返却時のリクエストパラメータの形式は {@code "key1=value1&key2=value2"} です。
+     * 返却時のクエリの形式は {@code "?key1=value1&key2=value2"} です。
      *
      * @param parameter リクエストパラメーターを生成する際に使用するキーと値が格納されたオブジェクト
      * @return 引数として渡された {@link RequestParameter}
-     *         クラスに設定された値を基に生成されたリクエストパラメーター。このリクエストパラメーターは {@code UTF-8}
-     *         形式でURLエンコード済みです。
+     *         クラスに設定された値を基に生成されたリクエストパラメーター。クエリの値は全ての項目で {@code UTF-8}
+     *         形式でURLエンコード処理が行われます。
      *
      * @exception NullPointerException 引数として {@code null} が渡された場合
      */
-    default String createRequestParameter(@NonNull RequestParameter parameter) {
+    default String createQuery(@NonNull RequestParameter requestParameter) {
 
-        final StringBuilder requestParameter = new StringBuilder();
+        final StringBuilder query = new StringBuilder();
+        query.append("?");
 
-        Arrays.asList(parameter.getClass().getDeclaredFields()).forEach(field -> {
+        Arrays.asList(requestParameter.getClass().getDeclaredFields()).forEach(field -> {
             if (field.isAnnotationPresent(ParameterMapping.class)) {
                 try {
                     field.setAccessible(true);
-                    final String value = field.get(parameter).toString();
+                    final String value = field.get(requestParameter).toString();
 
                     if (!StringUtils.isEmpty(value)) {
 
                         final String keyAlias = field.getAnnotation(ParameterMapping.class).keyAlias();
 
-                        requestParameter.append(
-                                String.format("%s=%s&", StringUtils.isEmpty(keyAlias) ? field.getName() : keyAlias,
-                                        URLEncoder.encode(value, StandardCharsets.UTF_8)));
+                        query.append(String.format("%s=%s&", StringUtils.isEmpty(keyAlias) ? field.getName() : keyAlias,
+                                URLEncoder.encode(value, StandardCharsets.UTF_8)));
                     }
                 } catch (IllegalArgumentException | IllegalAccessException e) {
                     throw new InvalidParameterStateException(e);
@@ -80,9 +80,9 @@ public interface Communicable {
             }
         });
 
-        requestParameter.setLength(requestParameter.length() - 1);
+        query.setLength(query.length() - 1);
 
-        return requestParameter.toString();
+        return query.toString();
     }
 
     /**
