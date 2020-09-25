@@ -45,9 +45,14 @@ public enum HttpMethod implements Catalog<HttpMethod> {
     PUT(2),
 
     /**
+     * 更新メソッド
+     */
+    PATCH(3),
+
+    /**
      * 削除メソッド
      */
-    DELETE(3);
+    DELETE(4);
 
     /**
      * コード値
