@@ -18,6 +18,7 @@ import java.net.http.HttpResponse;
 
 import org.thinkit.api.catalog.BiCatalog;
 import org.thinkit.api.common.catalog.HttpStatus;
+import org.thinkit.common.Preconditions;
 
 import lombok.NonNull;
 
@@ -207,14 +208,12 @@ public final class ApiContext {
     private String send(int retryCount) {
 
         final HttpResponse<String> response = api.send();
-        final HttpStatus statusCode = BiCatalog.getEnum(HttpStatus.class, response.statusCode());
+        final HttpStatus httpStatus = BiCatalog.getEnum(HttpStatus.class, response.statusCode());
 
-        if (statusCode == null) {
-            throw new UnsupportedHttpStatusException();
-        }
+        Preconditions.requireNonNull(httpStatus, new UnsupportedHttpStatusException());
 
-        if (statusCode != HttpStatus.OK) {
-            if (this.retry && retryCount <= this.retryCount && this.isStatusRetryable(statusCode)) {
+        if (httpStatus != HttpStatus.OK) {
+            if (this.retry && retryCount <= this.retryCount && this.isStatusRetryable(httpStatus)) {
                 this.sleep();
                 return this.send(++retryCount);
             } else {
@@ -228,12 +227,12 @@ public final class ApiContext {
     /**
      * HTTPステータスが {@code 200} ではなかった場合にリトライ可能なステータスコードか判定します。
      *
-     * @param statusCode HTTPステータスコード
-     * @return HTTPステータスコードがリクエストタイムアウトの場合、または内部サーバーエラーの場合は {@code true} 、それ以外は
+     * @param httpStatus HTTPステータス
+     * @return HTTPステータがリクエストタイムアウトの場合、または内部サーバーエラーの場合は {@code true} 、それ以外は
      *         {@code false}
      */
-    private boolean isStatusRetryable(@NonNull HttpStatus statusCode) {
-        return statusCode == HttpStatus.REQUEST_TIMEOUT || statusCode == HttpStatus.INTERNAL_SERVER_ERROR;
+    private boolean isStatusRetryable(@NonNull HttpStatus httpStatus) {
+        return httpStatus == HttpStatus.REQUEST_TIMEOUT || httpStatus == HttpStatus.INTERNAL_SERVER_ERROR;
     }
 
     /**
