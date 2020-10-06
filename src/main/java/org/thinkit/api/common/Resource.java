@@ -19,8 +19,19 @@ import java.util.Arrays;
 import lombok.NonNull;
 
 /**
- * APIのリソースパスを抽象化したインターフェースです。<br>
- * APIのリソースパスを管理するクラスを定義する場合はこのインターフェースを実装してください。
+ * APIのリソースを抽象化したインターフェースです。<br>
+ * APIのリソースを管理するクラスを定義する場合はこのインターフェースを実装してください。
+ * <p>
+ * リソース中の動的要素を生成するための {@link #bind(String...)} メソッドを提供しています。 {@link Resource}
+ * インターフェースを実装した具象クラスで {@code "%s"} を含むリソース文字列を定義し、バインドしたい値を
+ * {@link #bind(String...)} メソッドの引数として渡すことでバインド処理を行うことができます。
+ *
+ * <pre>
+ * 使用例:
+ * <code>
+ * String resource = ConcreteResource.AnyResource.bind(var1, var2, var3);
+ * </code>
+ * </pre>
  *
  * @author Kato Shinya
  * @since 1.0
@@ -44,8 +55,9 @@ public interface Resource {
      * 例えば、リソースパス中に3つのバインド変数を定義した場合は以下のように使用してください。
      *
      * <pre>
+     * 使用例:
      * <code>
-     * String resource = ConcreteResource.bind(var1, var2, var3);
+     * String resource = ConcreteResource.AnyResource.bind(var1, var2, var3);
      * </code>
      * </pre>
      *
