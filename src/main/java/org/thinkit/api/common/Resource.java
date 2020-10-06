@@ -26,31 +26,31 @@ import lombok.NonNull;
  * @since 1.0
  * @version 1.0
  */
-public interface ResourcePath {
+public interface Resource {
 
     /**
-     * APIのリソースパスを返却します。
+     * APIのリソースを返却します。
      *
-     * @return APIのリソースパス
+     * @return APIのリソース
      */
-    public String getResourcePath();
+    public String getResource();
 
     /**
-     * リソースパスに引数として渡された値をバインドして返却します。
+     * リソースに引数として渡された値をバインドして返却します。
      * <p>
-     * 値をバインドさせるためにはあらかじめリソースパス中にバインド変数を定義する必要があります。リソースパスへの値のバインド処理は先頭から順番に
+     * 値をバインドさせるためにはあらかじめリソース中にバインド変数を定義する必要があります。リソースへの値のバインド処理は先頭から順番に
      * {@link String#format(String, Object...)} メソッドを使用して行われます。
      * <p>
      * 例えば、リソースパス中に3つのバインド変数を定義した場合は以下のように使用してください。
      *
      * <pre>
      * <code>
-     * String resourcePath = ConcreteResourcePath.bind(var1, var2, var3);
+     * String resource = ConcreteResource.bind(var1, var2, var3);
      * </code>
      * </pre>
      *
-     * @param parameters リソースパスへバインドする値。可変長引数なためカンマ区切りでバインドする値を指定してください。
-     * @return 引数として渡された値がバインドされたリソースパス
+     * @param parameters リソースへバインドする値（可変長引数）
+     * @return 引数として渡された値がバインドされたリソース
      *
      * @exception NullPointerException     引数として渡された値が {@code null} の場合
      * @exception IllegalArgumentException バインドする対象の値が引数として渡されなかった場合
@@ -61,12 +61,12 @@ public interface ResourcePath {
             throw new IllegalArgumentException();
         }
 
-        String resourcePath = this.getResourcePath();
+        String resource = this.getResource();
 
         for (String parameter : Arrays.asList(parameters)) {
-            resourcePath = String.format(resourcePath, parameter);
+            resource = String.format(resource, parameter);
         }
 
-        return resourcePath;
+        return resource;
     }
 }
