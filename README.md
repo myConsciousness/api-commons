@@ -18,7 +18,7 @@ This package was created for use in my personal side project, but it is necessar
 <dependency>
   <groupId>org.thinkit.api.common</groupId>
   <artifactId>api-commons</artifactId>
-  <version>v1.0.11</version>
+  <version>v1.0.12</version>
 </dependency>
 
 <servers>
@@ -45,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    implementation 'org.thinkit.api.common:api-commons:v1.0.11'
+    implementation 'org.thinkit.api.common:api-commons:v1.0.12'
 }
 ```
 
@@ -67,11 +67,12 @@ the License.
 
 ## More Information
 
-`API Commons` was designed and implemented by Kato Shinya, who works as a freelance developer from Japan.
+`API Commons` was designed and implemented by Kato Shinya, who works as a freelance developer.
 
 Regardless of the means or content of communication, I would love to hear from you if you have any questions or concerns. I do not check my email box very often so a response may be delayed, anyway thank you for your interest!
 
 - [Creator Profile](https://github.com/myConsciousness)
+- [Creator Website](https://myconsciousness.github.io/)
 - [License](https://github.com/myConsciousness/api-commons/blob/master/LICENSE)
 - [Release Note](https://github.com/myConsciousness/api-commons/releases)
 - [Package](https://github.com/myConsciousness/api-commons/packages)
