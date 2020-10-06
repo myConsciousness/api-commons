@@ -16,7 +16,7 @@ package org.thinkit.api.common;
 
 import java.util.Arrays;
 
-import lombok.NonNull;
+import org.thinkit.common.Preconditions;
 
 /**
  * APIのリソースを抽象化したインターフェースです。<br>
@@ -67,11 +67,8 @@ public interface Resource {
      * @exception NullPointerException     引数として渡された値が {@code null} の場合
      * @exception IllegalArgumentException バインドする対象の値が引数として渡されなかった場合
      */
-    default String bind(@NonNull String... parameters) {
-
-        if (parameters.length <= 0) {
-            throw new IllegalArgumentException();
-        }
+    default String bind(String... parameters) {
+        Preconditions.requireNonEmpty(parameters, new IllegalArgumentException());
 
         String resource = this.getResource();
 
